@@ -2,8 +2,8 @@ just a dumb footloose setup of influxdb, timescaledb, an outflux migration host
 
 install footloose
 
-    footloose create
     docker network create deflux-net
+    footloose create
 
     ansible-playbook all.yml
 
