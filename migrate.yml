@@ -1,0 +1,9 @@
+---
+- hosts: deflux
+  tasks:
+    - name: schema transfer
+      command: outflux schema-transfer --input-server http://inf0:8086 telegraf --schema-strategy DropAndCreate --output-conn 'host=tsd0 database=telegraf user=telegraf password=telegraf'
+
+    - name: schema transfer
+      command: outflux migrate --input-server http://inf0:8086 telegraf --output-conn 'host=tsd0 database=telegraf user=telegraf password=telegraf'
+

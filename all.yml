@@ -1,0 +1,8 @@
+---
+- name: setup timescaledb
+  include: timescale.yml
+- name: setup influxdb
+  include: influxdb.yml
+- name: setup deflux host
+  include: deflux.yml
+  

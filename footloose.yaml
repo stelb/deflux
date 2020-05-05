@@ -1,0 +1,48 @@
+# vim: ts=2:sw=2:expandtab:ai:
+#
+cluster:
+  name: deflux
+  privateKey: cluster-key
+machines:
+- count: 1
+  spec:
+    backend: docker
+    image: quay.io/footloose/centos7:0.6.0
+    networks:
+    - deflux-net
+    name: inf%d
+    portMappings:
+    - containerPort: 22
+    - containerPort: 8086
+    volumes:
+      - type: bind
+        source: /
+        destination: /host
+- count: 1
+  spec:
+    backend: docker
+    image: quay.io/footloose/centos7:0.6.0
+    networks:
+    - deflux-net
+    name: tsd%d
+    portMappings:
+    - containerPort: 22
+    - containerPort: 5432
+    volumes:
+      - type: bind
+        source: /
+        destination: /host
+- count: 1
+  spec:
+    backend: docker
+    image: quay.io/footloose/centos7:0.6.0
+    networks:
+    - deflux-net
+    name: def%d
+    portMappings:
+    - containerPort: 22
+    - containerPort: 5432
+    volumes:
+      - type: bind
+        source: /
+        destination: /host

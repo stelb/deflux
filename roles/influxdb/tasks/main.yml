@@ -1,0 +1,28 @@
+---
+- name: "[influxdb] add centos repo"
+  yum_repository:
+    name: influxdb
+    description: "InfluxDB Repository - RHEL $releasever"
+    baseurl: "https://repos.influxdata.com/rhel/$releasever/$basearch/stable"
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://repos.influxdata.com/influxdb.key
+
+- name: "install influxdb & telegraf"
+  yum:
+    name:
+      - influxdb-1.7.10
+      - telegraf
+    state: present
+
+- name: enable and start influxdb
+  service:
+    name: influxd
+    state: started
+    enabled: yes
+
+- name: enable and start telegraf
+  service:
+    name: telegraf
+    state: started
+    enabled: yes

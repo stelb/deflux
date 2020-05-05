@@ -1,0 +1,8 @@
+[influx]
+deflux-inf0 ansible_connection=docker
+
+[timescale]
+deflux-tsd0 ansible_connection=docker
+
+[deflux]
+deflux-def0 ansible_connection=docker

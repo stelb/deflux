@@ -1,0 +1,78 @@
+---
+- name: pgdg repo
+  yum:
+    name:
+      - https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+- name: timescale repo
+  yum_repository:
+    description: "timescale repo"
+    name: timescale_timescaledb
+    baseurl: https://packagecloud.io/timescale/timescaledb/el/7/\$basearch
+    gpgcheck: no
+    enabled: yes
+    gpgkey: https://packagecloud.io/timescale/timescaledb/gpgkey
+    #metadata_expire: 300
+
+- name: install timescaledb
+  yum:
+    name:
+      - timescaledb-postgresql-12
+      - python-psycopg2
+      - python-ipaddress
+
+- name: init postgres
+  command: initdb
+  environment:
+    PATH: /usr/pgsql-12/bin
+    PGDATA: /var/lib/pgsql/12/data
+  become: true
+  become_user: postgres
+  args:
+    creates: /var/lib/pgsql/12/data/postgresql.conf
+
+- name: timescale config
+  command:
+    argv:
+      - /usr/bin/timescaledb-tune
+      - "-yes"
+  environment:
+    PATH: /usr/pgsql-12/bin
+  become: true
+  become_user: postgres
+
+- name: open port
+  lineinfile:
+    path: /var/lib/pgsql/12/data/postgresql.conf
+    regexp: '^listen_addresses'
+    line: "listen_addresses = '*'"
+
+- name: add hba
+  postgresql_pg_hba:
+    dest: /var/lib/pgsql/12/data/pg_hba.conf
+    contype: host
+    users: telegraf
+    source: samenet
+    databases: telegraf
+    method: md5
+
+- name: start timescaledb
+  service:
+    name: postgresql-12
+    state: restarted
+    enabled: yes
+
+- name: create database
+  postgresql_db:
+    name: telegraf
+
+- name: create extension
+  postgresql_ext:
+    db: telegraf
+    name: timescaledb
+    cascade: true
+
+- name: create user
+  postgresql_user:
+    name: telegraf
+    password: telegraf

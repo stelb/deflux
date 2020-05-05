@@ -1,0 +1,13 @@
+---
+#- hosts: footloose
+#  tasks:
+#  - name: create network
+#    docker_network:
+#      name: mig-net
+#      state: present
+#  - name: footloose create
+#    command: footloose create
+
+- hosts: influx
+  roles:
+  - role: influxdb

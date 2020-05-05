@@ -1,0 +1,4 @@
+---
+- hosts: timescale
+  roles:
+  - role: timescaledb
